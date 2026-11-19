@@ -1,0 +1,242 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1800" height="1480" viewBox="0 0 1800 1480" role="img" aria-labelledby="title description">
+  <title id="title">Neha Opticals: WhatsApp and assistant service flow</title>
+  <desc id="description">Plain-language architecture diagram. The outbound lane shows staff updating this demo's SQLite order and sending a WhatsApp Cloud API notification. The inbound lane shows Meta delivering a customer message through ngrok to FastAPI, customer matching, assistant retrieval and optional OpenRouter phrasing, then a WhatsApp reply. Notes distinguish the demo SQLite database from an external retailer system and list the two Meta webhook subscriptions.</desc>
+  <defs>
+    <marker id="arrow" markerWidth="12" markerHeight="12" refX="10" refY="6" orient="auto" markerUnits="strokeWidth">
+      <path d="M1,1 L11,6 L1,11 Z" fill="#43536b"/>
+    </marker>
+    <marker id="arrow-gold" markerWidth="12" markerHeight="12" refX="10" refY="6" orient="auto" markerUnits="strokeWidth">
+      <path d="M1,1 L11,6 L1,11 Z" fill="#aa7413"/>
+    </marker>
+    <marker id="arrow-green" markerWidth="12" markerHeight="12" refX="10" refY="6" orient="auto" markerUnits="strokeWidth">
+      <path d="M1,1 L11,6 L1,11 Z" fill="#23835e"/>
+    </marker>
+    <style>
+      .bg { fill: #f3f6fb; }
+      .title { font: 700 34px Arial, sans-serif; fill: #18263a; }
+      .subtitle { font: 16px Arial, sans-serif; fill: #526179; }
+      .panel { fill: #fff; stroke: #d6deea; stroke-width: 2; rx: 20; }
+      .panel-out { fill: #fffaf0; stroke: #ead9b5; }
+      .panel-in { fill: #f5fbf8; stroke: #c9e2d5; }
+      .section { font: 700 22px Arial, sans-serif; fill: #24364e; }
+      .section-note { font: 14px Arial, sans-serif; fill: #53647b; }
+      .card { fill: #fff; stroke: #8292a8; stroke-width: 2; rx: 14; }
+      .blue { fill: #edf4ff; stroke: #3975d5; }
+      .gold { fill: #fff5df; stroke: #b98522; }
+      .green { fill: #eaf7f0; stroke: #298260; }
+      .purple { fill: #f4edfb; stroke: #8051b8; }
+      .neutral { fill: #f7f9fc; stroke: #8292a8; }
+      .badge { fill: #25364e; }
+      .badge-text { font: 700 14px Arial, sans-serif; fill: #fff; }
+      .card-title { font: 700 17px Arial, sans-serif; fill: #1d2b40; }
+      .card-body { font: 14px Arial, sans-serif; fill: #425169; }
+      .card-small { font: 12px Arial, sans-serif; fill: #596a81; }
+      .arrow { fill: none; stroke: #43536b; stroke-width: 3; marker-end: url(#arrow); }
+      .arrow-gold { fill: none; stroke: #aa7413; stroke-width: 3; marker-end: url(#arrow-gold); }
+      .arrow-green { fill: none; stroke: #23835e; stroke-width: 3; marker-end: url(#arrow-green); }
+      .arrow-dash { stroke-dasharray: 8 6; }
+      .label { font: 12px Arial, sans-serif; fill: #425169; paint-order: stroke; stroke: #fff; stroke-width: 5px; stroke-linejoin: round; }
+      .note { fill: #fff8e9; stroke: #e6c46e; stroke-width: 1.5; rx: 14; }
+      .note-title { font: 700 16px Arial, sans-serif; fill: #564821; }
+      .note-body { font: 13px Arial, sans-serif; fill: #564821; }
+      .footer { font: 12px Arial, sans-serif; fill: #5b6b80; }
+    </style>
+  </defs>
+  <rect class="bg" x="0" y="0" width="1800" height="1480"/>
+  <text class="title" x="56" y="58">Neha Opticals — how the WhatsApp assistant works</text>
+  <text class="subtitle" x="58" y="88">Two separate journeys: staff-initiated order notices go out; customer messages come back through Meta's webhook.</text>
+  <text class="subtitle" x="58" y="113">The diagram describes this demo's current code and local setup, not an integration to an external retailer database.</text>
+
+  <rect class="panel panel-out" x="40" y="145" width="1720" height="390"/>
+  <text class="section" x="70" y="185">A. OUTBOUND — staff updates an order, customer receives a WhatsApp message</text>
+  <text class="section-note" x="72" y="210">A real send happens only on a new transition to Ready for Delivery and when Cloud API credentials are loaded.</text>
+
+  <rect class="card blue" x="75" y="245" width="285" height="225"/>
+  <circle class="badge" cx="101" cy="271" r="17"/><text class="badge-text" x="101" y="276" text-anchor="middle">1</text>
+  <text class="card-title" x="128" y="277">Store staff</text>
+  <text class="card-body" x="96" y="314">
+    <tspan x="96" dy="0">In the Streamlit Orders tab,</tspan>
+    <tspan x="96" dy="22">select “Ready for Delivery”</tspan>
+    <tspan x="96" dy="22">and apply the update.</tspan>
+    <tspan x="96" dy="34">This is the demo app's local</tspan>
+    <tspan x="96" dy="22">order record, not a POS sync.</tspan>
+  </text>
+
+  <rect class="card blue" x="415" y="245" width="285" height="225"/>
+  <circle class="badge" cx="441" cy="271" r="17"/><text class="badge-text" x="441" y="276" text-anchor="middle">2</text>
+  <text class="card-title" x="468" y="277">Streamlit + assistant</text>
+  <text class="card-body" x="436" y="314">
+    <tspan x="436" dy="0">streamlit_app.py calls</tspan>
+    <tspan x="436" dy="22">assistant.update_order_status().</tspan>
+    <tspan x="436" dy="34">The assistant reads the order</tspan>
+    <tspan x="436" dy="22">and the customer's stored phone.</tspan>
+  </text>
+  <text class="card-small" x="436" y="440">No send if status did not change.</text>
+
+  <rect class="card neutral" x="755" y="245" width="285" height="225"/>
+  <circle class="badge" cx="781" cy="271" r="17"/><text class="badge-text" x="781" y="276" text-anchor="middle">3</text>
+  <text class="card-title" x="808" y="277">SQLite database</text>
+  <text class="card-body" x="776" y="314">
+    <tspan x="776" dy="0">Write order status and its</tspan>
+    <tspan x="776" dy="22">status-history entry.</tspan>
+    <tspan x="776" dy="34">Read recipient from customers;</tspan>
+    <tspan x="776" dy="22">store a local conversation copy.</tspan>
+  </text>
+  <text class="card-small" x="776" y="440">database.py · data/neha_opticals.sqlite3</text>
+
+  <rect class="card gold" x="1095" y="245" width="285" height="225"/>
+  <circle class="badge" cx="1121" cy="271" r="17"/><text class="badge-text" x="1121" y="276" text-anchor="middle">4</text>
+  <text class="card-title" x="1148" y="277">WhatsApp transport</text>
+  <text class="card-body" x="1116" y="314">
+    <tspan x="1116" dy="0">whatsapp_client.py POSTs text</tspan>
+    <tspan x="1116" dy="22">to Meta Graph API using the</tspan>
+    <tspan x="1116" dy="22">Phone Number ID and access token.</tspan>
+  </text>
+  <text class="card-small" x="1116" y="409">No token → local-only fallback.</text>
+  <text class="card-small" x="1116" y="432">Meta may require a template outside</text>
+  <text class="card-small" x="1116" y="450">the customer service window.</text>
+
+  <rect class="card gold" x="1435" y="245" width="285" height="225"/>
+  <circle class="badge" cx="1461" cy="271" r="17"/><text class="badge-text" x="1461" y="276" text-anchor="middle">5</text>
+  <text class="card-title" x="1488" y="277">Customer's phone</text>
+  <text class="card-body" x="1456" y="314">
+    <tspan x="1456" dy="0">Meta delivers the ready-for-</tspan>
+    <tspan x="1456" dy="22">collection notice to the</tspan>
+    <tspan x="1456" dy="22">customer's WhatsApp account.</tspan>
+  </text>
+  <text class="card-small" x="1456" y="418">Example: “Your glasses are ready.”</text>
+
+  <path class="arrow" d="M360 355 H410"/>
+  <path class="arrow" d="M700 355 H750"/>
+  <path class="arrow" d="M1040 355 H1090"/>
+  <path class="arrow-gold" d="M1380 355 H1430"/>
+  <text class="label" x="352" y="338">apply</text>
+  <text class="label" x="696" y="338">read/write</text>
+  <text class="label" x="1032" y="338">send</text>
+  <text class="label" x="1374" y="338">deliver</text>
+
+  <rect class="panel panel-in" x="40" y="560" width="1720" height="565"/>
+  <text class="section" x="70" y="600">B. INBOUND — customer asks, assistant retrieves facts, WhatsApp reply returns</text>
+  <text class="section-note" x="72" y="625">Follow 1 → 4 across the top row, then 5 → 8 back across the bottom row.</text>
+
+  <rect class="card green" x="75" y="660" width="350" height="170"/>
+  <circle class="badge" cx="101" cy="686" r="17"/><text class="badge-text" x="101" y="691" text-anchor="middle">1</text>
+  <text class="card-title" x="128" y="692">Customer → Meta</text>
+  <text class="card-body" x="96" y="731">
+    <tspan x="96" dy="0">Customer sends a text message</tspan>
+    <tspan x="96" dy="22">to the WhatsApp Business number.</tspan>
+    <tspan x="96" dy="32">Meta receives it first.</tspan>
+  </text>
+
+  <rect class="card gold" x="500" y="660" width="350" height="170"/>
+  <circle class="badge" cx="526" cy="686" r="17"/><text class="badge-text" x="526" y="691" text-anchor="middle">2</text>
+  <text class="card-title" x="553" y="692">Public HTTPS / ngrok</text>
+  <text class="card-body" x="521" y="731">
+    <tspan x="521" dy="0">Meta POSTs the event to</tspan>
+    <tspan x="521" dy="22">https://&lt;public-host&gt;/webhook.</tspan>
+    <tspan x="521" dy="32">ngrok forwards it to local</tspan>
+    <tspan x="521" dy="22">FastAPI on port 8000.</tspan>
+  </text>
+
+  <rect class="card green" x="925" y="660" width="350" height="170"/>
+  <circle class="badge" cx="951" cy="686" r="17"/><text class="badge-text" x="951" y="691" text-anchor="middle">3</text>
+  <text class="card-title" x="978" y="692">FastAPI webhook</text>
+  <text class="card-body" x="946" y="731">
+    <tspan x="946" dy="0">service_api.py validates the</tspan>
+    <tspan x="946" dy="22">raw-body HMAC signature and</tspan>
+    <tspan x="946" dy="22">business Phone Number ID.</tspan>
+  </text>
+  <text class="card-small" x="946" y="804">GET verifies; POST receives events.</text>
+
+  <rect class="card neutral" x="1350" y="660" width="350" height="170"/>
+  <circle class="badge" cx="1376" cy="686" r="17"/><text class="badge-text" x="1376" y="691" text-anchor="middle">4</text>
+  <text class="card-title" x="1403" y="692">Match known customer</text>
+  <text class="card-body" x="1371" y="731">
+    <tspan x="1371" dy="0">Normalize sender's phone and</tspan>
+    <tspan x="1371" dy="22">match customers.phone in SQLite.</tspan>
+    <tspan x="1371" dy="32">Unknown senders and non-text</tspan>
+    <tspan x="1371" dy="22">events are ignored.</tspan>
+  </text>
+
+  <path class="arrow-green" d="M425 745 H495"/>
+  <path class="arrow-green" d="M850 745 H920"/>
+  <path class="arrow-green" d="M1275 745 H1345"/>
+
+  <rect class="card blue" x="1350" y="900" width="350" height="175"/>
+  <circle class="badge" cx="1376" cy="926" r="17"/><text class="badge-text" x="1376" y="931" text-anchor="middle">5</text>
+  <text class="card-title" x="1403" y="932">Assistant pipeline</text>
+  <text class="card-body" x="1371" y="971">
+    <tspan x="1371" dy="0">process_customer_query() runs</tspan>
+    <tspan x="1371" dy="22">the existing intent and answer</tspan>
+    <tspan x="1371" dy="22">logic used by Streamlit chat.</tspan>
+  </text>
+  <text class="card-small" x="1371" y="1049">assistant.py · not a separate bot</text>
+
+  <rect class="card neutral" x="925" y="900" width="350" height="175"/>
+  <circle class="badge" cx="951" cy="926" r="17"/><text class="badge-text" x="951" y="931" text-anchor="middle">6</text>
+  <text class="card-title" x="978" y="932">Retrieve the right facts</text>
+  <text class="card-body" x="946" y="971">
+    <tspan x="946" dy="0">Balance / order: customer-scoped</tspan>
+    <tspan x="946" dy="22">SQLite query. Catalog / delivery:</tspan>
+    <tspan x="946" dy="22">this app's REST API and SQLite.</tspan>
+  </text>
+  <text class="card-small" x="946" y="1049">Hours may use approved-site web search.</text>
+
+  <rect class="card purple" x="500" y="900" width="350" height="175"/>
+  <circle class="badge" cx="526" cy="926" r="17"/><text class="badge-text" x="526" y="931" text-anchor="middle">7</text>
+  <text class="card-title" x="553" y="932">Optional OpenRouter</text>
+  <text class="card-body" x="521" y="971">
+    <tspan x="521" dy="0">When configured, phrases the</tspan>
+    <tspan x="521" dy="22">answer using retrieved facts.</tspan>
+    <tspan x="521" dy="32">It does not access the database.</tspan>
+  </text>
+  <text class="card-small" x="521" y="1049">Otherwise, deterministic answer path.</text>
+
+  <rect class="card gold" x="75" y="900" width="350" height="175"/>
+  <circle class="badge" cx="101" cy="926" r="17"/><text class="badge-text" x="101" y="931" text-anchor="middle">8</text>
+  <text class="card-title" x="128" y="932">Send reply to customer</text>
+  <text class="card-body" x="96" y="971">
+    <tspan x="96" dy="0">whatsapp_client.py sends the</tspan>
+    <tspan x="96" dy="22">assistant reply to Meta; Meta</tspan>
+    <tspan x="96" dy="22">delivers it to the sender.</tspan>
+  </text>
+  <text class="card-small" x="96" y="1049">FastAPI uses its own process env.</text>
+
+  <path class="arrow-green" d="M1525 830 V895"/>
+  <path class="arrow" d="M1350 987 H1280"/>
+  <path class="arrow" d="M925 987 H855"/>
+  <path class="arrow-gold" d="M500 987 H430"/>
+
+  <rect class="note" x="40" y="1150" width="545" height="245"/>
+  <text class="note-title" x="65" y="1185">Data and API boundaries</text>
+  <text class="note-body" x="65" y="1220">
+    <tspan x="65" dy="0">• Orders, balances, customers, and chat are in this demo's SQLite.</tspan>
+    <tspan x="65" dy="23">• FastAPI is this project's service, not an external retailer API.</tspan>
+    <tspan x="65" dy="23">• The assistant retrieves facts before optional model phrasing.</tspan>
+    <tspan x="65" dy="23">• A real POS integration needs a separate connector/API.</tspan>
+    <tspan x="65" dy="23">• Transcript records are not a Meta delivery-status ledger.</tspan>
+  </text>
+
+  <rect class="note" x="625" y="1150" width="545" height="245"/>
+  <text class="note-title" x="650" y="1185">Meta webhook setup: both are required</text>
+  <text class="note-body" x="650" y="1220">
+    <tspan x="650" dy="0">1. Subscribe the messages field in app webhook configuration.</tspan>
+    <tspan x="650" dy="23">2. Subscribe the Meta app to the correct WhatsApp Business</tspan>
+    <tspan x="670" dy="20">Account (WABA). They are separate settings.</tspan>
+    <tspan x="650" dy="23">Both subscriptions were verified for NehaOpticals during setup;</tspan>
+    <tspan x="650" dy="20">the inbound and outbound test then worked.</tspan>
+  </text>
+
+  <rect class="note" x="1210" y="1150" width="550" height="245"/>
+  <text class="note-title" x="1235" y="1185">Configuration and limits</text>
+  <text class="note-body" x="1235" y="1220">
+    <tspan x="1235" dy="0">• Both processes load root .env at startup; restart after edits.</tspan>
+    <tspan x="1235" dy="23">• Access token + Phone Number ID enable sends; verify token</tspan>
+    <tspan x="1255" dy="20">validates GET; App Secret validates signed POST events.</tspan>
+    <tspan x="1235" dy="23">• Local ngrok URL works only while its tunnel is running.</tspan>
+    <tspan x="1235" dy="23">• Free-form business messages may need an approved template</tspan>
+    <tspan x="1255" dy="20">outside WhatsApp's customer-service window.</tspan>
+  </text>
+
+  <text class="footer" x="58" y="1440">Code map: streamlit_app.py · assistant.py · database.py · service_api.py · rest_api_client.py · whatsapp_client.py · env_config.py</text>
+</svg>
